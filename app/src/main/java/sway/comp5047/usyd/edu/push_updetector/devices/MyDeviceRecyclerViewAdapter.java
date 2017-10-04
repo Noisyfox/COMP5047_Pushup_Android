@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import sway.comp5047.usyd.edu.push_updetector.R;
 import sway.comp5047.usyd.edu.push_updetector.devices.DeviceFragment.OnListFragmentInteractionListener;
 import sway.comp5047.usyd.edu.push_updetector.devices.dummy.DummyContent.DummyItem;
 
