@@ -1,6 +1,7 @@
 package sway.comp5047.usyd.edu.push_updetector.devices;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,7 +50,7 @@ public class DeviceFragment extends Fragment {
 
         view.findViewById(R.id.add_device).setOnClickListener(v ->
         {
-
+            getActivity().startActivity(new Intent(getContext(), WifiSelectionActivity.class));
         });
 
         return view;
