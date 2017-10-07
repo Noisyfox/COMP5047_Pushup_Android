@@ -1,7 +1,10 @@
 package sway.comp5047.usyd.edu.push_updetector;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -9,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import sway.comp5047.usyd.edu.push_updetector.devices.DeviceFragment;
+import sway.comp5047.usyd.edu.push_updetector.plan.PlanFragment;
 
 public class MainActivity extends AppCompatActivity
 		implements NavigationView.OnNavigationItemSelectedListener
@@ -30,6 +35,11 @@ public class MainActivity extends AppCompatActivity
 
 		NavigationView navigationView = ( NavigationView ) findViewById( R.id.nav_view );
 		navigationView.setNavigationItemSelectedListener( this );
+
+		if( savedInstanceState==null )
+		{
+			updateContent( R.id.nav_plan );
+		}
 	}
 
 	@Override
@@ -71,24 +81,32 @@ public class MainActivity extends AppCompatActivity
 		return super.onOptionsItemSelected( item );
 	}
 
-	@SuppressWarnings( "StatementWithEmptyBody" )
 	@Override
-	public boolean onNavigationItemSelected( MenuItem item )
+	public boolean onNavigationItemSelected( @NonNull MenuItem item )
 	{
-		// Handle navigation view item clicks here.
-		int id = item.getItemId();
-
-		if( id==R.id.nav_devices )
-		{
-			// Handle the camera action
-		}
-		else if( id==R.id.nav_plan )
-		{
-
-		}
+		updateContent(item.getItemId());
 
 		DrawerLayout drawer = ( DrawerLayout ) findViewById( R.id.drawer_layout );
 		drawer.closeDrawer( GravityCompat.START );
 		return true;
+	}
+
+	private void updateContent( int drawerId )
+	{
+		Fragment fragment;
+		switch( drawerId )
+		{
+			case R.id.nav_devices:
+				fragment = new DeviceFragment();
+				break;
+			case R.id.nav_plan:
+				fragment = new PlanFragment();
+				break;
+			default:
+				throw new IllegalArgumentException( "Unknown drawerId" );
+		}
+
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		fragmentManager.beginTransaction().replace(R.id.main_content, fragment).commit();
 	}
 }
