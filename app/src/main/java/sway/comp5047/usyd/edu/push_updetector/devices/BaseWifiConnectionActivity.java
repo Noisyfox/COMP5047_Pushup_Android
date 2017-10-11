@@ -54,16 +54,7 @@ public abstract class BaseWifiConnectionActivity extends AppCompatActivity {
                 List<ScanResult> mScanResults = mWifiManager.getScanResults();
 
                 mAdapter.clear();
-                mAdapter.addAll(mScanResults
-                        .stream()
-                        .map(r -> {
-                            AccessPoint ap = new AccessPoint(r);
-                            ap.password = mSavedPassword.getOrDefault(ap.SSID, null);
-                            return ap;
-                        })
-                        .filter(BaseWifiConnectionActivity.this::filterAccessPoint)
-                        .collect(Collectors.toList())
-                );
+                mAdapter.addAll(mapToAccessPoint(mScanResults));
             }
         }
     };
@@ -112,7 +103,22 @@ public abstract class BaseWifiConnectionActivity extends AppCompatActivity {
         checkPermission();
 
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        mAdapter.addAll(mWifiManager.getScanResults().stream().map(AccessPoint::new).collect(Collectors.toList()));
+        mAdapter.addAll(mapToAccessPoint(mWifiManager.getScanResults()));
+    }
+
+    private List<AccessPoint> mapToAccessPoint( List<ScanResult> scanResults )
+    {
+        return scanResults
+                .stream()
+                .map( r ->
+                {
+                    AccessPoint ap = new AccessPoint( r );
+                    ap.password = mSavedPassword.getOrDefault( ap.SSID, null );
+                    return ap;
+                } )
+                .filter( BaseWifiConnectionActivity.this::filterAccessPoint )
+                .distinct()
+                .collect( Collectors.toList() );
     }
 
     protected abstract void onSetContentView(Bundle savedInstanceState);

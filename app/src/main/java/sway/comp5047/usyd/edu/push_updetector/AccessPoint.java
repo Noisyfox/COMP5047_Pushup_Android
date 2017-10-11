@@ -34,6 +34,24 @@ public class AccessPoint implements Parcelable {
     }
 
     @Override
+    public boolean equals( Object o )
+    {
+        if( this==o ) return true;
+        if( o==null || getClass()!=o.getClass() ) return false;
+
+        AccessPoint that = ( AccessPoint ) o;
+
+        return SSID!=null ? SSID.equals( that.SSID ) : that.SSID==null;
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return SSID!=null ? SSID.hashCode() : 0;
+    }
+
+    @Override
     public String toString() {
         return SSID;
     }
