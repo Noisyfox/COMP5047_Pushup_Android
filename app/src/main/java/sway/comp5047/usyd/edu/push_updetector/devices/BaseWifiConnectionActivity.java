@@ -2,10 +2,7 @@ package sway.comp5047.usyd.edu.push_updetector.devices;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.*;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -46,6 +43,7 @@ public abstract class BaseWifiConnectionActivity extends AppCompatActivity {
     private ArrayAdapter<AccessPoint> mAdapter;
     private ListView mWifiList;
     private ProgressBar mProgressBar;
+    private int mNetId = -1;
 
     private final BroadcastReceiver mWifiScanReceiver = new BroadcastReceiver() {
         @Override
@@ -212,9 +210,11 @@ public abstract class BaseWifiConnectionActivity extends AppCompatActivity {
                 return;
         }
 
+        mNetId = -1;
         int netId = mWifiManager.addNetwork(conf);
         mWifiManager.disconnect();
         mWifiManager.enableNetwork(netId, true);
+        mNetId = netId;
         mWifiManager.reconnect();
 
         ProgressDialog pd = ProgressDialog.show(this, null, "Connecting to " + conf.SSID + " WiFi (30)", true, true);
@@ -250,14 +250,25 @@ public abstract class BaseWifiConnectionActivity extends AppCompatActivity {
                 pd.setMessage("Connecting to " + conf.SSID + " WiFi (" + countDown + ")");
                 if (countDown <= 0) {
                     pd.cancel();
+                    removeConnectedAP();
                 }
             }
         });
         pd.findViewById(android.R.id.progress).startAnimation(checkConnectionAnimation);
-
+        pd.setOnCancelListener( dialog -> removeConnectedAP() );
     }
 
     protected abstract boolean filterAccessPoint(AccessPoint ap);
 
     protected abstract void onAPConnected(AccessPoint ap);
+
+    protected void removeConnectedAP()
+    {
+        int netId = mNetId;
+        mNetId = -1;
+        if( netId!=-1 )
+        {
+            mWifiManager.removeNetwork( netId );
+        }
+    }
 }

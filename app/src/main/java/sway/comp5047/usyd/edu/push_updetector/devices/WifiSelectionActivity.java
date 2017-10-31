@@ -20,6 +20,7 @@ public class WifiSelectionActivity extends BaseWifiConnectionActivity {
 
     @Override
     protected void onAPConnected(AccessPoint ap) {
+        removeConnectedAP();
         Intent intent = new Intent(this, DeviceConnectionActivity.class);
         intent.putExtra("AP", ap);
         startActivity(intent);

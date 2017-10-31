@@ -93,6 +93,7 @@ public class DeviceConnectionActivity extends BaseWifiConnectionActivity {
                 });
                 builder.show();
             }
+            removeConnectedAP();
         }
 
         @Override
